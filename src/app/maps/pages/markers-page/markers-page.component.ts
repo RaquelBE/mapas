@@ -71,4 +71,12 @@ export class MarkersPageComponent {
     this.markers[index].marker.remove(); //elimina el marcador del mapa, pero deja la "etiqueta"
     this.markers.splice(index, 1); //elimina la "etiqueta"
   }
+
+  // flyTo -> hace que vaya al marcador que indiques pulsando en la "etiqueta" de forma animada
+  flyTo( marker: Marker ) {
+    this.map?.flyTo({
+      zoom: 14,
+      center: marker.getLngLat()
+    })
+  }
 }
