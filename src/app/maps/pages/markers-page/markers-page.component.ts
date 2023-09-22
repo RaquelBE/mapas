@@ -6,6 +6,11 @@ interface MarkerAndColor {
   marker: Marker;
 }
 
+interface PlainMarker {
+  color: string;
+  lngLat: number[];
+}
+
 @Component({
   selector: 'markers-page',
   templateUrl: './markers-page.component.html',
@@ -31,6 +36,8 @@ export class MarkersPageComponent {
       zoom: 13, // starting zoom
     });
 
+    this.readFromLocalStorage();
+
     //TODO: PERSONALIZAR MARCADORES
     /* const markerHtml = document.createElement('div');
     markerHtml.innerHTML = 'Raquel Blázquez'
@@ -49,6 +56,7 @@ export class MarkersPageComponent {
     );
     const lngLat = this.map.getCenter();
     this.addMarker(lngLat, color);
+    this.saveToLocalStorage();
   }
 
   addMarker(lngLat: LngLat, color: string) {
@@ -73,10 +81,34 @@ export class MarkersPageComponent {
   }
 
   // flyTo -> hace que vaya al marcador que indiques pulsando en la "etiqueta" de forma animada
-  flyTo( marker: Marker ) {
+  flyTo(marker: Marker) {
     this.map?.flyTo({
       zoom: 14,
-      center: marker.getLngLat()
-    })
+      center: marker.getLngLat(),
+    });
+  }
+
+  //localStorage solo guarda strings. Aquí guardaremos la latitud y longitud y el color
+  saveToLocalStorage() {
+    const plainMarkers: PlainMarker[] = this.markers.map(
+      ({ color, marker }) => {
+        return {
+          color,
+          lngLat: marker.getLngLat().toArray(),
+        };
+      }
+    );
+    localStorage.setItem('plainMarkers', JSON.stringify(plainMarkers));
+  }
+
+  readFromLocalStorage() {
+    const plainMarkersString = localStorage.getItem('plainMarkers') ?? '[]';
+    const plainMarkers: PlainMarker[] = JSON.parse(plainMarkersString); // ! Ojo!
+
+    plainMarkers.forEach(({ color, lngLat }) => {
+      const [lng, lat] = lngLat;
+      const coords = new LngLat(lng, lat);
+      this.addMarker(coords, color);
+    });
   }
 }
