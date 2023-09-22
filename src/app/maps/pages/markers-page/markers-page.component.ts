@@ -56,7 +56,6 @@ export class MarkersPageComponent {
     );
     const lngLat = this.map.getCenter();
     this.addMarker(lngLat, color);
-    this.saveToLocalStorage();
   }
 
   addMarker(lngLat: LngLat, color: string) {
@@ -73,6 +72,9 @@ export class MarkersPageComponent {
       color,
       marker,
     });
+    this.saveToLocalStorage();
+
+    marker.on('dragend', () => this.saveToLocalStorage()); // cundo muevo el marcador se queda grabada su ubicación
   }
 
   deleteMarker(index: number) {
