@@ -1,10 +1,38 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
+import { LngLat, Map, Marker } from 'mapbox-gl';
 
 @Component({
   selector: 'markers-page',
   templateUrl: './markers-page.component.html',
-  styleUrls: ['./markers-page.component.css']
+  styleUrls: ['./markers-page.component.css'],
 })
 export class MarkersPageComponent {
+  @ViewChild('map') divMap?: ElementRef;
 
+  public map?: Map;
+  public currentLngLat: LngLat = new LngLat(
+    -3.691538117018581,
+    40.109950691363906
+  );
+
+  ngAfterViewInit(): void {
+    if (!this.divMap) throw 'El elemento HTML no fue encontrado';
+    this.map = new Map({
+      container: this.divMap.nativeElement, // container ID
+      style: 'mapbox://styles/mapbox/streets-v12', // style URL
+      center: this.currentLngLat, // starting position [lng, lat]
+      zoom: 13, // starting zoom
+    });
+
+    //TODO: PERSONALIZAR MARCADORES
+    /* const markerHtml = document.createElement('div');
+    markerHtml.innerHTML = 'Raquel Blázquez'
+
+
+    const marker = new Marker({
+      //color: 'red'
+      element: markerHtml
+    }).setLngLat(this.currentLngLat).addTo(this.map);*/
+
+  } 
 }
